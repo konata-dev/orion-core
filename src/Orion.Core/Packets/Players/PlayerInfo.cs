@@ -57,12 +57,12 @@ namespace Orion.Core.Packets.Players
         [field: FieldOffset(10)] public float PositionY { get; set; }
 
         /// <summary>
-        /// Gets or sets the player's horizontal velocity. <i>Sent only when <see cref="ShouldUpdateVelocity"/> is set to <see langword="true"/>!</i>
+        /// Gets or sets the player's horizontal velocity.
         /// </summary>
         [field: FieldOffset(14)] public float VelocityX { get; set; }
 
         /// <summary>
-        /// Gets or sets the player's vertical velocity. <i>Sent only when <see cref="ShouldUpdateVelocity"/> is set to <see langword="true"/>!</i>
+        /// Gets or sets the player's vertical velocity.
         /// </summary>
         [field: FieldOffset(18)] public float VelocityY { get; set; }
 
@@ -150,6 +150,15 @@ namespace Orion.Core.Packets.Players
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the player entity is facing to the right (indicated by Entity.direction being 1 in Terraria).
+        /// </summary>
+        public bool IsFacingRight
+        {
+            get => _controlFlags[6];
+            set => _controlFlags[6] = value;
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether pulley is enabled.
         /// </summary>
         public bool IsPulleyEnabled
@@ -159,22 +168,22 @@ namespace Orion.Core.Packets.Players
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the player is facing the right direction.
+        /// Gets or sets a value indicating whether the pulley is to the right of the rope.
         /// </summary>
-        public bool IsDirectionRight
+        public bool IsPulleyDirectionRight
         {
             get => _pulleyFlags[1];
             set => _pulleyFlags[1] = value;
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Gets or sets a value indicating whether <see cref="VelocityX"/> and <see cref="VelocityY"/> are sent.
         /// </summary>
         public bool ShouldUpdateVelocity
         {
             get => _pulleyFlags[2];
             set => _pulleyFlags[2] = value;
-        }
+        }*/
 
         /// <summary>
         /// Gets or sets a value indicating whether the Vortex Stealth effect is active.
@@ -201,6 +210,15 @@ namespace Orion.Core.Packets.Players
         {
             get => _pulleyFlags[5];
             set => _pulleyFlags[5] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the player is currently a ghost.
+        /// </summary>
+        public bool IsAGhost
+        {
+            get => _pulleyFlags[6];
+            set => _pulleyFlags[6] = value;
         }
 
         /// <summary>
@@ -275,12 +293,39 @@ namespace Orion.Core.Packets.Players
             set => _miscFlags[7] = value;
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the player has autoreuse enabled for all weapons (from an accessory).
+        /// </summary>
+        public bool IsAutoReuseOnAllWeaponsEnabled
+        {
+            get => _sleepingFlags[1];
+            set => _sleepingFlags[1] = value;
+        }
+
+        /// <summary>
+        /// tbd
+        /// </summary>
+        public bool ControlDownHold
+        {
+            get => _sleepingFlags[2];
+            set => _sleepingFlags[2] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the player is controlling another entity.
+        /// </summary>
+        public bool IsOperatingAnotherEntity
+        {
+            get => _sleepingFlags[3];
+            set => _sleepingFlags[3] = value;
+        }
+
         PacketId IPacket.Id => PacketId.PlayerInfo;
 
         int IPacket.ReadBody(Span<byte> span, PacketContext context)
         {
             var length = span.Read(ref _bytes, 14);
-            if (ShouldUpdateVelocity)
+            if (_pulleyFlags[2])
             {
                 length += span[length..].Read(ref _bytes2, 8);
             }
@@ -296,7 +341,7 @@ namespace Orion.Core.Packets.Players
         int IPacket.WriteBody(Span<byte> span, PacketContext context)
         {
             var length = span.Write(ref _bytes, 14);
-            if (ShouldUpdateVelocity)
+            if (new Vector2f(VelocityX, VelocityY) != Vector2f.Zero)
             {
                 length += span[length..].Write(ref _bytes2, 8);
             }

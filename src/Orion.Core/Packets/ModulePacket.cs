@@ -59,7 +59,7 @@ namespace Orion.Core.Packets
             }
             else if (_module is null)
             {
-                _module = (TModule)Activator.CreateInstance(typeof(TModule));
+                _module = Activator.CreateInstance<TModule>();
             }
 
             return 2 + _module.ReadBody(span[2..], context);

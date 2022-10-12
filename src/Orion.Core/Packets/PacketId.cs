@@ -166,6 +166,14 @@ namespace Orion.Core.Packets
         NpcRemoveBuff = 137,
         PlayerHost = 139,
         CreditsRoll = 140,
+        LucyAxePopup = 141,
+        ProjectileSyncTrackers = 142,
+        OldOnesArmyRequestSkip = 143,
+        NpcQuestEffect = 144,
+        //ItemShimmerSync = 145,
+        Shimmer = 146,
+        PlayerLoadout = 147,
+        //ItemNpcImmunity = 148,
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }
 

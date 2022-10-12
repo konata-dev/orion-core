@@ -29,7 +29,7 @@ namespace Orion.Core.Packets.Projectiles
     /// </summary>
     public struct ProjectileInfo : IPacket
     {
-        private const int MaxAi = 2;
+        private const int MaxAi = 3;
 
         private Flags8 _flags;
         private float[]? _ai;
@@ -60,9 +60,9 @@ namespace Orion.Core.Packets.Projectiles
         public short Type { get; set; }
 
         /// <summary>
-        /// Gets additional information.
+        /// Gets or sets additional information.
         /// </summary>
-        public float[] AdditionalInformation => _ai ??= new float[MaxAi];
+        public float[] AdditionalInformation { get => _ai ??= new float[MaxAi]; set => _ai = value; }
 
         /// <summary>
         /// Gets or sets the damage.
