@@ -19,9 +19,9 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Ionic.Zlib;
 using Orion.Core.Packets.DataStructures;
 using Orion.Core.Packets.DataStructures.TileEntities;
 using Orion.Core.Utils;
@@ -159,7 +159,7 @@ namespace Orion.Core.Packets.World
                 {
                     using var outputStream =
                         new UnmanagedMemoryStream(spanBytes, span.Length - 1, span.Length - 1, FileAccess.Write);
-                    var deflateStream = new DeflateStream(outputStream, CompressionLevel.Fastest, true);
+                    var deflateStream = new DeflateStream(outputStream, CompressionMode.Compress, true);
                     deflateStream.Write(buffer, 0, decompressedLength);
                     deflateStream.Close();
 

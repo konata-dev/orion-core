@@ -24,7 +24,7 @@ namespace Orion.Core.Packets.Players
     /// <summary>
     /// A packet that's sent from a client to the server when spawning.
     /// </summary>
-    [StructLayout(LayoutKind.Explicit, Size = 10)]
+    [StructLayout(LayoutKind.Explicit, Size = 14)]
     public struct PlayerSpawn : IPacket
     {
         [FieldOffset(0)] private byte _bytes; // Used to obtain an interior reference.
@@ -50,15 +50,25 @@ namespace Orion.Core.Packets.Players
         [field: FieldOffset(5)] public int TimeUntilRespawn { get; set; }
 
         /// <summary>
+        /// Gets or sets the value that indicates how many deaths were caused by pve.
+        /// </summary>
+        [field: FieldOffset(9)] public short DeathCountPve { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value that indicates how many deaths were caused by pvp.
+        /// </summary>
+        [field: FieldOffset(11)] public short DeathCountPvp { get; set; }
+
+        /// <summary>
         /// Gets or sets the spawn context.
         /// </summary>
-        [field: FieldOffset(9)] public PlayerSpawnContext SpawnContext { get; set; }
+        [field: FieldOffset(13)] public PlayerSpawnContext SpawnContext { get; set; }
 
         PacketId IPacket.Id => PacketId.PlayerSpawn;
 
-        int IPacket.ReadBody(Span<byte> span, PacketContext context) => span.Read(ref _bytes, 10);
+        int IPacket.ReadBody(Span<byte> span, PacketContext context) => span.Read(ref _bytes, 14);
 
-        int IPacket.WriteBody(Span<byte> span, PacketContext context) => span.Write(ref _bytes, 10);
+        int IPacket.WriteBody(Span<byte> span, PacketContext context) => span.Write(ref _bytes, 14);
     }
 
     /// <summary>

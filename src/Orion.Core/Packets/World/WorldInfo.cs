@@ -25,7 +25,7 @@ namespace Orion.Core.Packets.World
     /// <summary>
     /// A packet sent from the server to clients to propagate world changes.
     /// </summary>
-    [StructLayout(LayoutKind.Explicit, Size = 168)]
+    [StructLayout(LayoutKind.Explicit, Size = 172)]
     public sealed class WorldInfo : IPacket
     {
         [FieldOffset(0)] private byte _bytes;  // Used to obtain an interior reference
@@ -42,6 +42,9 @@ namespace Orion.Core.Packets.World
         [FieldOffset(141)] private Flags8 _worldFlags5;
         [FieldOffset(142)] private Flags8 _worldFlags6;
         [FieldOffset(143)] private Flags8 _worldFlags7;
+        [FieldOffset(144)] private Flags8 _worldFlags8;
+        [FieldOffset(145)] private Flags8 _worldFlags9;
+        [FieldOffset(146)] private Flags8 _worldFlags10;
 
         /// <summary>
         /// Gets or sets the time of day.
@@ -371,54 +374,64 @@ namespace Orion.Core.Packets.World
         [field: FieldOffset(133)] public float RainIntensity { get; set; }
 
         /// <summary>
+        /// Gets or sets the cooldown for the sundial.
+        /// </summary>
+        [field: FieldOffset(147)] public byte SundialCooldown { get; set; }
+
+        /// <summary>
+        /// Gets or sets the cooldown for the moondial.
+        /// </summary>
+        [field: FieldOffset(148)] public byte MoondialCooldown { get; set; }
+
+        /// <summary>
         /// Gets or sets the Copper tier.
         /// </summary>
-        [field: FieldOffset(144)] public short CopperTier { get; set; }
+        [field: FieldOffset(149)] public short CopperTier { get; set; }
 
         /// <summary>
         /// Gets or sets the Iron tier.
         /// </summary>
-        [field: FieldOffset(146)] public short IronTier { get; set; }
+        [field: FieldOffset(151)] public short IronTier { get; set; }
 
         /// <summary>
         /// Gets or sets the Silver tier.
         /// </summary>
-        [field: FieldOffset(148)] public short SilverTier { get; set; }
+        [field: FieldOffset(153)] public short SilverTier { get; set; }
 
         /// <summary>
         /// Gets or sets the Gold tier.
         /// </summary>
-        [field: FieldOffset(150)] public short GoldTier { get; set; }
+        [field: FieldOffset(155)] public short GoldTier { get; set; }
 
         /// <summary>
         /// Gets or sets the Cobalt tier.
         /// </summary>
-        [field: FieldOffset(152)] public short CobaltTier { get; set; }
+        [field: FieldOffset(157)] public short CobaltTier { get; set; }
 
         /// <summary>
         /// Gets or sets the Mythril tier.
         /// </summary>
-        [field: FieldOffset(154)] public short MythrilTier { get; set; }
+        [field: FieldOffset(159)] public short MythrilTier { get; set; }
 
         /// <summary>
         /// Gets or sets the Adamantite tier.
         /// </summary>
-        [field: FieldOffset(156)] public short AdamantiteTier { get; set; }
+        [field: FieldOffset(161)] public short AdamantiteTier { get; set; }
 
         /// <summary>
         /// Gets or sets the current invasion type.
         /// </summary>
-        [field: FieldOffset(158)] public sbyte InvasionType { get; set; }
+        [field: FieldOffset(163)] public sbyte InvasionType { get; set; }
 
         /// <summary>
         /// Gets or sets the lobby ID.
         /// </summary>
-        [field: FieldOffset(159)] public ulong LobbyId { get; set; }
+        [field: FieldOffset(164)] public ulong LobbyId { get; set; }
 
         /// <summary>
         /// Gets or sets the sandstorm severity.
         /// </summary>
-        [field: FieldOffset(167)] public float SandstormSeverity { get; set; }
+        [field: FieldOffset(172)] public float SandstormSeverity { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether it is currently day time.
@@ -952,7 +965,7 @@ namespace Orion.Core.Packets.World
             length += span[length..].Read(ref _uniqueIdBytes[0], 16);
             length += span[length..].Read(ref _bytes3, 62);
             length += span[length..].Read(ref AreaStyleVariation[0], 13);
-            length += span[length..].Read(ref _bytes4, 38);
+            length += span[length..].Read(ref _bytes4, 43);
             return length;
         }
 
@@ -964,7 +977,7 @@ namespace Orion.Core.Packets.World
             length += span[length..].Write(ref _uniqueIdBytes[0], 16);
             length += span[length..].Write(ref _bytes3, 62);
             length += span[length..].Write(ref AreaStyleVariation[0], 13);
-            length += span[length..].Write(ref _bytes4, 38);
+            length += span[length..].Write(ref _bytes4, 43);
             return length;
         }
     }

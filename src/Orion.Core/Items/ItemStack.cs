@@ -40,6 +40,18 @@ namespace Orion.Core.Items
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ItemStack"/> structure with the specified item
+        /// <paramref name="type"/> and optional <paramref name="prefix"/> and <paramref name="stack"/>.
+        /// </summary>
+        /// <param name="type">The item ID.</param>
+        /// <param name="prefix">The item prefix.</param>
+        /// <param name="stack">The item stack size.</param>
+        public ItemStack(int type, byte prefix = 0, short stack = 1) : this((ItemId)type, (ItemPrefix)prefix, stack)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ItemStack"/> structure with the specified item
         /// <paramref name="id"/> and optional <paramref name="prefix"/> and <paramref name="stackSize"/>.
         /// </summary>
         /// <param name="id">The item ID.</param>

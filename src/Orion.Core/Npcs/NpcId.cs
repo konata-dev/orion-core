@@ -747,9 +747,35 @@ namespace Orion.Core.Npcs
         BouncySlime = 659,
         HeavenlySlime = 660,
         PrismaticLacewing = 661,
-        PiratesCurse = 662
+        PiratesCurse = 662,
+        Princess = 663,
+        TorchGod = 664,
+        ChaosBallTim = 665,
+        VileSpitEaterOfWorlds = 666,
+        GoldenSlime = 667,
+        Deerclops = 668,
+        Stinkbug = 669,
+        TownSlimeBlue = 670,
+        ScarletMacaw = 671,
+        BlueMacaw = 672,
+        Toucan = 673,
+        YellowCockatiel = 674,
+        GrayCockatiel = 675,
+        ShimmerSlime = 676,
+        Shimmerfly = 677,
+        TownSlimeGreen = 678,
+        TownSlimeOld = 679,
+        TownSlimePurple = 680,
+        TownSlimeRainbow = 681,
+        TownSlimeRed = 682,
+        TownSlimeYellow = 683,
+        TownSlimeCopper = 684,
+        BoundTownSlimeOld = 685,
+        BoundTownSlimePurple = 686,
+        BoundTownSlimeYellow = 687,
+        Count = 688,
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
-    }
+}
 
     /// <summary>
     /// Provides extensions for the <see cref="NpcId"/> enumeration.
@@ -840,7 +866,15 @@ namespace Orion.Core.Npcs
             NpcId.HellButterfly,
             NpcId.Lavafly,
             NpcId.MagmaSnail,
-            NpcId.PrismaticLacewing
+            NpcId.PrismaticLacewing,
+            NpcId.Stinkbug,
+            NpcId.ScarletMacaw,
+            NpcId.BlueMacaw,
+            NpcId.Toucan,
+            NpcId.YellowCockatiel,
+            NpcId.GrayCockatiel,
+            NpcId.Shimmerfly,
+            NpcId.BoundTownSlimeYellow
         };
 
         /// <summary>

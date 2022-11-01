@@ -37,6 +37,7 @@ namespace Orion.Core.Packets.Players
         [FieldOffset(19)] private Flags8 _hideMiscSlotsFlags;
         [FieldOffset(41)] private Flags8 _difficultyFlags;
         [FieldOffset(42)] private Flags8 _torchFlags;
+        [FieldOffset(43)] private Flags8 _usedFlags;
 
         /// <summary>
         /// Gets or sets the player index.
@@ -299,7 +300,7 @@ namespace Orion.Core.Packets.Players
         {
             var length = span.Read(ref _bytes, 3);
             length += span[length..].Read(out _name);
-            length += span[length..].Read(ref _bytes2, 27);
+            length += span[length..].Read(ref _bytes2, 28);
             return length;
         }
 
@@ -307,7 +308,7 @@ namespace Orion.Core.Packets.Players
         {
             var length = span.Write(ref _bytes, 3);
             length += span[length..].Write(Name);
-            length += span[length..].Write(ref _bytes2, 27);
+            length += span[length..].Write(ref _bytes2, 28);
             return length;
         }
     }

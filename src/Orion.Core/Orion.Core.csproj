@@ -41,4 +41,10 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Ionic.Zip.CF">
+      <HintPath>..\..\Ionic.Zip.CF.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

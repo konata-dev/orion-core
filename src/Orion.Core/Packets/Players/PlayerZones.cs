@@ -33,6 +33,7 @@ namespace Orion.Core.Packets.Players
         [FieldOffset(2)] private Flags8 _flags2;
         [FieldOffset(3)] private Flags8 _flags3;
         [FieldOffset(4)] private Flags8 _flags4;
+        [FieldOffset(5)] private Flags8 _flags5;
 
         /// <summary>
         /// Gets or sets the player index.
@@ -391,10 +392,28 @@ namespace Orion.Core.Packets.Players
             set => _flags4[6] = value;
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the player is near a shadow candle.
+        /// </summary>
+        public bool ShadowCandle
+        {
+            get => _flags4[7];
+            set => _flags4[7] = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the player is in the shimmer biome.
+        /// </summary>
+        public bool Shimmer
+        {
+            get => _flags5[0];
+            set => _flags5[0] = value;
+        }
+
         PacketId IPacket.Id => PacketId.PlayerZones;
 
-        int IPacket.ReadBody(Span<byte> span, PacketContext context) => span.Read(ref _bytes, 5);
+        int IPacket.ReadBody(Span<byte> span, PacketContext context) => span.Read(ref _bytes, 6);
 
-        int IPacket.WriteBody(Span<byte> span, PacketContext context) => span.Write(ref _bytes, 5);
+        int IPacket.WriteBody(Span<byte> span, PacketContext context) => span.Write(ref _bytes, 6);
     }
 }

@@ -24,7 +24,7 @@ namespace Orion.Core.Packets.Server
     /// <summary>
     /// A packet sent from the server to the client to set the client's index.
     /// </summary>
-    [StructLayout(LayoutKind.Explicit, Size = 1)]
+    [StructLayout(LayoutKind.Explicit, Size = 2)]
     public struct ClientIndex : IPacket
     {
         [FieldOffset(0)] private byte _bytes;  // Used to obtain an interior reference.
@@ -35,10 +35,15 @@ namespace Orion.Core.Packets.Server
         /// <value>The client's index.</value>
         [field: FieldOffset(0)] public byte Index { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the server wants to run the client checkbytes loop.
+        /// </summary>
+        [field: FieldOffset(1)] public bool RunCheckBytesOnClient { get; set; }
+
         PacketId IPacket.Id => PacketId.ClientIndex;
 
-        int IPacket.ReadBody(Span<byte> span, PacketContext context) => span.Read(ref _bytes, 1);
+        int IPacket.ReadBody(Span<byte> span, PacketContext context) => span.Read(ref _bytes, 2);
 
-        int IPacket.WriteBody(Span<byte> span, PacketContext context) => span.Write(ref _bytes, 1);
+        int IPacket.WriteBody(Span<byte> span, PacketContext context) => span.Write(ref _bytes, 2);
     }
 }

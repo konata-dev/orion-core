@@ -42,7 +42,7 @@ namespace Orion.Core.Events
         /// <exception cref="InvalidOperationException">The event is not canceled.</exception>
         [NotLogged]
         public string CancellationReason =>
-            _cancellationReason ?? throw new InvalidOperationException("Event is not canceled");
+            _cancellationReason ?? string.Empty; // throw new InvalidOperationException("Event is not canceled"); shit fix beacuse i have to find why this gets called
 
         /// <summary>
         /// Cancels the event, optionally with the given <paramref name="reason"/>.

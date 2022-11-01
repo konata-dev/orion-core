@@ -193,7 +193,7 @@ namespace Orion.Core.Packets
             [PacketId.WorldInfo] = typeof(WorldInfo),
             [PacketId.ClientStatus] = typeof(ClientStatus),
             [PacketId.SectionRequest] = typeof(SectionRequest),
-            [PacketId.SectionInfo] = typeof(SectionInfo),
+            //[PacketId.SectionInfo] = typeof(SectionInfo),
             [PacketId.SectionFrames] = typeof(SectionFrames),
             [PacketId.PlayerSpawn] = typeof(PlayerSpawn),
             [PacketId.PlayerInfo] = typeof(PlayerInfo),

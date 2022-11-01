@@ -25,7 +25,7 @@ namespace Orion.Core.Packets.Players
     /// <summary>
     /// A packet sent to set a player's buffs.
     /// </summary>
-    [StructLayout(LayoutKind.Explicit, Size = 48)]
+    [StructLayout(LayoutKind.Explicit, Size = 90)]
     public sealed class PlayerBuffs : IPacket
     {
         [FieldOffset(0)] private byte _bytes;  // Used to obtain an interior reference.
@@ -41,12 +41,12 @@ namespace Orion.Core.Packets.Players
         /// Gets the buff IDs.
         /// </summary>
         /// <value>The buff IDs.</value>
-        public Span<BuffId> Ids => MemoryMarshal.CreateSpan(ref _buffIds, 22);
+        public Span<BuffId> Ids => MemoryMarshal.CreateSpan(ref _buffIds, 44);
 
         PacketId IPacket.Id => PacketId.PlayerBuffs;
 
-        int IPacket.ReadBody(Span<byte> span, PacketContext context) => span.Read(ref _bytes, 45);
+        int IPacket.ReadBody(Span<byte> span, PacketContext context) => span.Read(ref _bytes, 89);
 
-        int IPacket.WriteBody(Span<byte> span, PacketContext context) => span.Write(ref _bytes, 45);
+        int IPacket.WriteBody(Span<byte> span, PacketContext context) => span.Write(ref _bytes, 89);
     }
 }

@@ -33,9 +33,11 @@ namespace Orion.Core.Events.Npcs
         /// <paramref name="npc"/>.
         /// </summary>
         /// <param name="npc">The NPC whose defaults are being set.</param>
+        /// <param name="par">The multipliers to apply to the npcs stats.</param>
         /// <exception cref="ArgumentNullException"><paramref name="npc"/> is <see langword="null"/>.</exception>
-        public NpcDefaultsEvent(INpc npc) : base(npc)
+        public NpcDefaultsEvent(INpc npc, NpcSpawnParams par) : base(npc)
         {
+            SpawnParameters = par;
         }
 
         /// <summary>
@@ -43,5 +45,10 @@ namespace Orion.Core.Events.Npcs
         /// </summary>
         /// <value>The NPC ID that the NPC's defaults are being set to.</value>
         public NpcId Id { get; set; }
+
+        /// <summary>
+        /// The spawn parameters that will be used in scaling the stats on the npc.
+        /// </summary>
+        public NpcSpawnParams SpawnParameters { get; set; }
     }
 }

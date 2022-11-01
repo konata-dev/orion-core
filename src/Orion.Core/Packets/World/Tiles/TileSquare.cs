@@ -48,23 +48,31 @@ namespace Orion.Core.Packets.World.Tiles
         private const ushort HasWallColorMask /*    */ = 0b_00001000_00000000;
         private const ushort SlopeMask /*           */ = 0b_01110000_00000000;
         private const ushort HasYellowWireMask /*   */ = 0b_10000000_00000000;
+        private const byte FullbrightBlockMask /*   */ = 0b_10000000;
+        private const byte FullbrightWallMask /*    */ = 0b_01000000;
+        private const byte InvisibleBlockMask /*    */ = 0b_00100000;
+        private const byte InvisibleWallMask /*     */ = 0b_00010000;
 
         [FieldOffset(0)] private byte _bytes;  // Used to obtain an interior reference.
-        [FieldOffset(0)] private readonly byte _changeType;  // Unused.
-        [FieldOffset(1)] private byte _bytes2;  // Used to obtain an interior reference.
+        [FieldOffset(4)] private byte _bytes2;
         [FieldOffset(8)] private ITileSlice? _tiles;
 
         /// <summary>
         /// Gets or sets the top-left tile's X coordinate.
         /// </summary>
         /// <value>The top-left tile's X coordinate.</value>
-        [field: FieldOffset(1)] public short X { get; set; }
+        [field: FieldOffset(0)] public short X { get; set; }
 
         /// <summary>
         /// Gets or sets the top-left tile's Y coordinate.
         /// </summary>
         /// <value>The top-left tile's Y coordinate.</value>
-        [field: FieldOffset(3)] public short Y { get; set; }
+        [field: FieldOffset(2)] public short Y { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tilechangetype of this tilesquare.
+        /// </summary>
+        [field: FieldOffset(4)] public TileChangeType ChangeType { get; set; }
 
         /// <summary>
         /// Gets or sets the square of tiles.
@@ -83,11 +91,6 @@ namespace Orion.Core.Packets.World.Tiles
                     throw new ArgumentNullException(nameof(value));
                 }
 
-                if (value.Width != value.Height)
-                {
-                    throw new ArgumentException("Value is not a square", nameof(value));
-                }
-
                 _tiles = value;
             }
         }
@@ -96,24 +99,18 @@ namespace Orion.Core.Packets.World.Tiles
 
         int IPacket.ReadBody(Span<byte> span, PacketContext context)
         {
-            var length = 2;
-            var size = Unsafe.ReadUnaligned<short>(ref span.At(0));
-            if (size < 0)
-            {
-                length += span[length..].Read(ref _bytes, 5);
-                size &= short.MaxValue;
-            }
-            else
-            {
-                length += span[length..].Read(ref _bytes2, 4);
-            }
+            var length = 3 + span.Read(ref _bytes, 4);
+            var width = span.At(4);
+            var height = span.At(5);
 
-            _tiles = new NetworkTileSlice(size, size);
-            for (var i = 0; i < size; ++i)
+            ChangeType = (TileChangeType)span.At(6);
+            Tiles = new NetworkTileSlice(width, height);
+
+            for (int i = 0; i < width; i++)
             {
-                for (var j = 0; j < size; ++j)
+                for (int j = 0; j < height; j++)
                 {
-                    length += ReadTile(span[length..], ref _tiles[i, j]);
+                    length += ReadTile(span[length..], ref Tiles[i, j]);
                 }
             }
 
@@ -122,22 +119,14 @@ namespace Orion.Core.Packets.World.Tiles
 
         int IPacket.WriteBody(Span<byte> span, PacketContext context)
         {
-            var length = 2;
-            ref var size = ref Unsafe.As<byte, short>(ref span.At(0));
-            size = (short)Tiles.Width;
-            if (_changeType > 0)
-            {
-                length += span[length..].Write(ref _bytes, 5);
-                size |= ~short.MaxValue;
-            }
-            else
-            {
-                length += span[length..].Write(ref _bytes2, 4);
-            }
+            var length = 2 + span.Write(ref _bytes, 4);
+            span.At(4) = (byte)Tiles.Width;
+            span.At(5) = (byte)Tiles.Height;
+            span.At(6) = (byte)ChangeType;
 
-            for (var i = 0; i < Tiles.Width; ++i)
+            for (int i = 0; i < Tiles.Width; i++)
             {
-                for (var j = 0; j < Tiles.Height; ++j)
+                for (int j = 0; j < Tiles.Height; j++)
                 {
                     length += WriteTile(span[length..], ref Tiles[i, j]);
                 }
@@ -149,7 +138,8 @@ namespace Orion.Core.Packets.World.Tiles
         private int ReadTile(Span<byte> span, ref Tile tile)
         {
             ref var header = ref Unsafe.As<byte, ushort>(ref span.At(0));
-            var length = 2;
+            ref var header2 = ref span.At(2);
+            var length = 3;
 
             tile.HasRedWire /*      */ = (header & HasRedWireMask) != 0;
             tile.HasActuator /*     */ = (header & HasActuatorMask) != 0;
@@ -157,6 +147,10 @@ namespace Orion.Core.Packets.World.Tiles
             tile.HasBlueWire /*     */ = (header & HasBlueWireMask) != 0;
             tile.HasGreenWire /*    */ = (header & HasGreenWireMask) != 0;
             tile.HasYellowWire /*   */ = (header & HasYellowWireMask) != 0;
+            tile.IsBlockFullbright     = (header2 & FullbrightBlockMask) != 0;
+            tile.IsWallFullbright /**/ = (header2 & FullbrightWallMask) != 0;
+            tile.IsBlockInvisible /**/ = (header2 & InvisibleBlockMask) != 0;
+            tile.IsWallInvisible /* */ = (header2 & InvisibleWallMask) != 0;
 
             if ((header & HasBlockColorMask) != 0)
             {
@@ -212,8 +206,9 @@ namespace Orion.Core.Packets.World.Tiles
         private int WriteTile(Span<byte> span, ref Tile tile)
         {
             ref var header = ref Unsafe.As<byte, ushort>(ref span.At(0));
+            ref var header2 = ref span.At(2);
             header = 0;
-            var length = 2;
+            var length = 3;
 
             if (tile.HasRedWire) /*      */ header |= HasRedWireMask;
             if (tile.HasActuator) /*     */ header |= HasActuatorMask;
@@ -221,6 +216,10 @@ namespace Orion.Core.Packets.World.Tiles
             if (tile.HasBlueWire) /*     */ header |= HasBlueWireMask;
             if (tile.HasGreenWire) /*    */ header |= HasGreenWireMask;
             if (tile.HasYellowWire) /*   */ header |= HasYellowWireMask;
+            if (tile.IsBlockFullbright)    header2 |= FullbrightBlockMask;
+            if (tile.IsWallFullbright)     header2 |= FullbrightWallMask;
+            if (tile.IsBlockInvisible)     header2 |= InvisibleBlockMask;
+            if (tile.IsWallInvisible) /**/ header2 |= InvisibleWallMask;
 
             if (tile.BlockColor != PaintColor.None)
             {
@@ -280,6 +279,22 @@ namespace Orion.Core.Packets.World.Tiles
             }
 
             return length;
+        }
+
+        /// <summary>
+        /// Represents the tile change type (as of 1.4.4.7 only used for telling clients to play specific sounds).
+        /// </summary>
+        public enum TileChangeType : byte
+        {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+            None,
+            LavaWater,
+            HoneyWater,
+            HoneyLava,
+            ShimmerWater,
+            ShimmerLava,
+            ShimmerHoney,
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
         }
     }
 }

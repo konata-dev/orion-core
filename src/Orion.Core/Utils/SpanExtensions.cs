@@ -40,6 +40,7 @@ namespace Orion.Core.Utils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T At<T>(this Span<T> span, int index)
         {
+            
             Debug.Assert(index >= 0 && index < span.Length);
 
             return ref Unsafe.Add(ref MemoryMarshal.GetReference(span), index);

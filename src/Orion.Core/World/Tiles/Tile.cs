@@ -47,6 +47,10 @@ namespace Orion.Core.World.Tiles
         private const uint IsBlockActuatedMask /* */ = 0b_00000000_00100000_00000000_00000000;
         private const uint LiquidTypeMask /*      */ = 0b_00000000_11000000_00000000_00000000;
         private const uint WallColorMask /*       */ = 0b_00011111_00000000_00000000_00000000;
+        private const uint InvisibleBlockMask /*  */ = 0b_00000000_00000000_00000000_10000000;
+        private const uint InvisibleWallMask /*   */ = 0b_00000000_00000000_00000000_01000000;
+        private const uint FullbrightBlockMask /* */ = 0b_00000000_00000000_00000000_00100000;
+        private const uint FullbrightWallMask /*  */ = 0b_00000000_00000000_00000000_00010000;
 
         [FieldOffset(0)] private readonly ulong _bytes;
         [FieldOffset(2)] private ushort _wallId;
@@ -223,6 +227,42 @@ namespace Orion.Core.World.Tiles
 
                 _header = (_header & ~WallColorMask) | ((uint)value << WallColorShift);
             }
+        }
+
+        /// <summary>
+        /// Gets or sets whether the block is invisible.
+        /// </summary>
+        public bool IsBlockInvisible
+        {
+            get => GetHeaderFlag(InvisibleBlockMask);
+            set => SetHeaderFlag(InvisibleBlockMask, value);
+        }
+
+        /// <summary>
+        /// Gets or sets whether the wall is invisible.
+        /// </summary>
+        public bool IsWallInvisible
+        {
+            get => GetHeaderFlag(InvisibleWallMask);
+            set => SetHeaderFlag(InvisibleWallMask, value);
+        }
+
+        /// <summary>
+        /// Gets or sets whether the block should be rendered as fullbright.
+        /// </summary>
+        public bool IsBlockFullbright
+        {
+            get => GetHeaderFlag(FullbrightBlockMask);
+            set => SetHeaderFlag(FullbrightBlockMask, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value whether the wall should be rendered as fullbright.
+        /// </summary>
+        public bool IsWallFullbright
+        {
+            get => GetHeaderFlag(FullbrightWallMask);
+            set => SetHeaderFlag(FullbrightWallMask, value);
         }
 
         /// <inheritdoc/>
