@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1704.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orion.Core", "Orion.Core.csproj", "{389CA666-995D-4B9C-882A-766B55DC9947}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{389CA666-995D-4B9C-882A-766B55DC9947}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{389CA666-995D-4B9C-882A-766B55DC9947}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{389CA666-995D-4B9C-882A-766B55DC9947}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{389CA666-995D-4B9C-882A-766B55DC9947}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {037573F0-4DD2-42F7-8D2B-16399DA584A1}
+	EndGlobalSection
+EndGlobal

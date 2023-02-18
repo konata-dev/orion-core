@@ -25,7 +25,8 @@ namespace Orion.Core.World.Tiles
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         Water = 0,
         Lava = 1,
-        Honey = 2
+        Honey = 2,
+        Shimmer = 3
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }
 }
