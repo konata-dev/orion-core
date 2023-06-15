@@ -32,6 +32,7 @@ namespace Orion.Core.Packets.Projectiles
         private const int MaxAi = 3;
 
         private Flags8 _flags;
+        private Flags8 _flags2;
         private float[]? _ai;
 
         /// <summary>
@@ -84,6 +85,11 @@ namespace Orion.Core.Packets.Projectiles
         /// </summary>
         public short Uuid { get; set; }
 
+        /// <summary>
+        /// Gets or sets the banner ID.
+        /// </summary>
+        public ushort BannerId { get; set; }
+
         PacketId IPacket.Id => PacketId.ProjectileInfo;
 
         int IPacket.ReadBody(Span<byte> span, PacketContext context)
@@ -95,15 +101,26 @@ namespace Orion.Core.Packets.Projectiles
             OwnerIndex = span.Read<byte>();
             Type = span.Read<short>();
             _flags = span.Read<Flags8>();
-            for (var i = 0; i < AdditionalInformation.Length; ++i)
-            {
-                if (!_flags[i])
-                {
-                    continue;
-                }
 
-                AdditionalInformation[i] = span.Read<float>();
+            if (_flags[2])
+                _flags2 = span.Read<Flags8>();
+
+            if (_flags[0]) // replaced the for loop with this because the 3rd ai value is wrote at the end of the packet
+            {
+                AdditionalInformation[0] = span.Read<float>();
                 length += 4;
+            }
+
+            if (_flags[1])
+            {
+                AdditionalInformation[1] = span.Read<float>();
+                length += 4;
+            }
+
+            if (_flags[3])
+            {
+                BannerId = span.Read<ushort>();
+                length += 2;
             }
 
             if (_flags[4])
@@ -130,6 +147,12 @@ namespace Orion.Core.Packets.Projectiles
                 length += 2;
             }
 
+            if (_flags2[0])
+            {
+                AdditionalInformation[2] = span.Read<float>();
+                length += 4;
+            }
+
             return length;
         }
 
@@ -142,15 +165,27 @@ namespace Orion.Core.Packets.Projectiles
             length += span[length..].Write(Type);
 
             var flagsOffset = length++;
-            for (var i = 0; i < AdditionalInformation.Length; ++i)
-            {
-                if (AdditionalInformation[i] <= 0)
-                {
-                    continue;
-                }
+            var flags2Offset = AdditionalInformation[2] == 0 ? -1 : length++; // shit solution but im making the bad assumption there will be no more uses of the flag
 
-                _flags[i] = true;
-                length += span[length..].Write(AdditionalInformation[i]);
+            if (flags2Offset != -1)
+                _flags[2] = true;
+
+            if (AdditionalInformation[0] != 0)
+            {
+                _flags[0] = true;
+                length += span[length..].Write(AdditionalInformation[0]);
+            }
+
+            if (AdditionalInformation[1] != 0)
+            {
+                _flags[1] = true;
+                length += span[length..].Write(AdditionalInformation[1]);
+            }
+
+            if (BannerId > 0)
+            {
+                _flags[3] = true;
+                length += span[length..].Write(BannerId);
             }
 
             if (Damage > 0)
@@ -177,7 +212,17 @@ namespace Orion.Core.Packets.Projectiles
                 length += span[length..].Write(Uuid);
             }
 
+            if (AdditionalInformation[2] != 0)
+            {
+                _flags2[0] = true;
+                length += span[length..].Write(AdditionalInformation[2]);
+            }
+
             span[flagsOffset] = Unsafe.As<Flags8, byte>(ref _flags);
+
+            if (_flags[2])
+                span[flags2Offset] = Unsafe.As<Flags8, byte>(ref _flags2);
+
             return length;
         }
     }
