@@ -24,21 +24,26 @@ namespace Orion.Core.Packets.World
     /// <summary>
     /// A packet sent from the server to the client to set Moon Lord information.
     /// </summary>
-    [StructLayout(LayoutKind.Explicit, Size = 4)]
+    [StructLayout(LayoutKind.Explicit, Size = 8)]
     public struct MoonLordInfo : IPacket
     {
         [FieldOffset(0)] private byte _bytes;  // Used to obtain an interior reference.
 
         /// <summary>
+        /// Gets or sets the max number of ticks before Moon Lord spawns.
+        /// </summary>
+        [field: FieldOffset(0)] public int MaxSpawnTicks { get; set; }
+
+        /// <summary>
         /// Gets or sets the number of ticks before Moon Lord spawns.
         /// </summary>
         /// <value>The number of ticks before Moon Lord spawns.</value>
-        [field: FieldOffset(0)] public int SpawnTicks { get; set; }
+        [field: FieldOffset(4)] public int SpawnTicks { get; set; }
 
         PacketId IPacket.Id => PacketId.MoonLordInfo;
 
-        int IPacket.ReadBody(Span<byte> span, PacketContext context) => span.Read(ref _bytes, 4);
+        int IPacket.ReadBody(Span<byte> span, PacketContext context) => span.Read(ref _bytes, 8);
 
-        int IPacket.WriteBody(Span<byte> span, PacketContext context) => span.Write(ref _bytes, 4);
+        int IPacket.WriteBody(Span<byte> span, PacketContext context) => span.Write(ref _bytes, 8);
     }
 }

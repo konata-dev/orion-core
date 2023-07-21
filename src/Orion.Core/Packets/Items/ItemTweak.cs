@@ -35,7 +35,7 @@ namespace Orion.Core.Packets.Items
         /// <summary>
         /// Gets or sets the item index.
         /// </summary>
-        public int ItemIndex { get; set; }
+        public short ItemIndex { get; set; }
 
         /// <summary>
         /// Gets or sets the color.
@@ -138,9 +138,9 @@ namespace Orion.Core.Packets.Items
 
         int IPacket.ReadBody(Span<byte> span, PacketContext context)
         {
-            ItemIndex = MemoryMarshal.Read<int>(span);
+            ItemIndex = MemoryMarshal.Read<short>(span);
 
-            var length = 4;
+            var length = 2;
             _flags = MemoryMarshal.Read<Flags8>(span[(length++)..]);
             if (_flags[0])
             {

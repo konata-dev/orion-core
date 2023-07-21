@@ -112,7 +112,7 @@ namespace Orion.Core.Packets.World
 
         unsafe int IPacket.ReadBody(Span<byte> span, PacketContext context)
         {
-            if (span.At(0) != 0)
+            if (true)
             {
                 var pool = ArrayPool<byte>.Shared;
                 var buffer = pool.Rent(524288);  // 524288 should be long enough for a decompression buffer.
@@ -121,9 +121,9 @@ namespace Orion.Core.Packets.World
                 {
                     var decompressedLength = 0;
 
-                    fixed (byte* spanBytes = span[1..])
+                    fixed (byte* spanBytes = span)
                     {
-                        using var inputStream = new UnmanagedMemoryStream(spanBytes, span.Length - 1);
+                        using var inputStream = new UnmanagedMemoryStream(spanBytes, span.Length);
                         var deflateStream = new DeflateStream(inputStream, CompressionMode.Decompress, true);
                         decompressedLength = deflateStream.Read(buffer, 0, buffer.Length);
                         deflateStream.Close();
@@ -138,7 +138,7 @@ namespace Orion.Core.Packets.World
             }
             else
             {
-                _ = Read(span[1..]);
+                //_ = Read(span[1..]);
             }
 
             return span.Length;

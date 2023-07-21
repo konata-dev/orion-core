@@ -170,10 +170,10 @@ namespace Orion.Core.Packets
         ProjectileSyncTrackers = 142,
         OldOnesArmyRequestSkip = 143,
         NpcQuestEffect = 144,
-        //ItemShimmerSync = 145,
+        ShimmerItemInfo = 145,
         Shimmer = 146,
         PlayerLoadout = 147,
-        //ItemNpcImmunity = 148,
+        NpcImmunityItemInfo = 148,
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }
 
